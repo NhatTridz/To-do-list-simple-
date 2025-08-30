@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>To-do list</title>
+  <style>
+  body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background-image: linear-gradient(to top, #FEFFF2, #F9FF9C);
+    animation: bgDoi 5s ease infinite;
+  }
+  body::after {
+    content: '';
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background-image: linear-gradient(to top, #F9FF9C, #FEFFF2);
+    animation: bgDoilai 5s ease 5s infinite;
+  }
+  @keyframes bgDoi {
+    from {opacity: 1;}
+    to {opacity: 0;}
+  }
+  @keyframes bgDoilai {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  .box {
+    border: 1px solid;
+    width: 400px;
+    border-radius: 20px;
+    text-align: center;
+    margin: 10px;
+    background: #00EBA7;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: 0.5s ease;
+  }
+  .box  {
+    display: none;
+  }
+  .box.active {
+    display: block;
+  }
+  .box::before {
+    content: '';
+    position: absolute;
+    left: 100%;
+    width: 100%;
+    height: 100vh;
+    background: #00C38A;
+    z-index: -1;
+    transition: 0.5s ease;
+    filter: blur(7px);
+  }
+  .box:hover::before {
+    left: 50%;
+  }
+  .box:hover {
+    color: white;
+  }
+  .box input {
+    height: 50px;
+    width: 300px;
+    border-radius: 10px;
+    border: 1px solid #F4F5FF;
+    position: relative;
+    transition: 0.5s ease;
+  }
+  .box input:hover {
+    transform: scale(1.1);
+  }
+  .box input:focus {
+    background: #00C38A;
+    color: white;
+  }
+  .box #them {
+    height: 30px;
+    width: 100px;
+    border: 1px solid white;
+    border-radius: 5px;
+    margin-top: 10px;
+    color: #00C38A;
+    transition: 0.5s ease;
+  }
+  #box #them:hover {
+    transform: scale(1.1);
+  }
+  .box #them:active {
+    background: #00C38A;
+    color: white;
+  }
+  .box button {
+    height: 25px;
+    width: 60px;
+    margin: 0 0 20px 20px;
+    border: 1px solid white;
+    border-radius: 5px;
+    background: white;
+  }
+  .box li {
+    list-style: none;
+  }
+  @media (min-width: 769px) {
+    .box {
+      width: 800px;
+      font-size: 1.5rem;
+    }
+    .box input {
+      height: 75px;
+      width: 400px;
+      font-size: 1.5rem;
+      border-radius: 20px;
+    }
+    .box #them {
+      height: 50px;
+      width: 200px;
+      margin-top: 20px;
+      border-radius: 10px;
+    }
+    .box button {
+      height: 40px;
+      width: 75px;
+    }
+  }
+  </style>
+</head>
+
+<body>
+  <div class="box active" id="box">
+  <h1>To-do list</h1>
+  <input type="text" id="input"><br>
+  <button id="them">Add</button>
+  <ul id="list">
+    
+  </ul>
+  </div>
+  
+  
+  <script>
+  let tasks =
+  JSON.parse(localStorage.getItem("tasks")) || [];
+  let store = JSON.parse(localStorage.getItem("store")) || [];
+  function render() {
+    let list = document.querySelector('#list');
+    list.innerHTML = "";
+    tasks.forEach((item, index) => {
+      let p = document.createElement('li');
+      p.textContent = item;
+      p.addEventListener('click', () => {
+        p.style.textDecoration = "line-through";
+      });
+      let btn = document.createElement('button');
+      btn.textContent = "remove"
+      btn.addEventListener('click', () => {
+        tasks.splice(index, 1);
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        render();
+      });
+      p.appendChild(btn);
+      list.appendChild(p);
+    })
+  };
+  
+  document.querySelector('#them').addEventListener('click', () => {
+    let input = document.querySelector("#input");
+    let values = input.value.trim();
+    if (!values) return;
+    tasks.push(values);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    input.value = "";
+    render();
+  });
+  render();
+  
+  console.log(tasks);
+  console.log(store);
+  
+  function doiTrang(id) {
+    document.querySelectorAll('.box').forEach(box => {
+      box.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+  }
+  </script>
+</body>
+
+</html>
